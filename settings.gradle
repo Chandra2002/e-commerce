@@ -6,3 +6,5 @@ pluginManagement {
 	}
 }
 rootProject.name = 'ecommerce'
+include 'ecom_business_model'
+include 'ecom_pre_install_hook'

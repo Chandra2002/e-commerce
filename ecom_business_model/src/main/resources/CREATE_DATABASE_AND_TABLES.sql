@@ -59,13 +59,3 @@ CREATE TABLE IF NOT EXISTS `E_COMMERCE`.`PAYMENT_DETAILS` (
         user_id bigint not null,
         primary key(card_upi_number),
         foreign key (user_id) references USER_DETAILS(user_id));
-desc `E_COMMERCE`.`USER_LOGIN_DETAILS`;
-desc `E_COMMERCE`.`USER_DETAILS`;
-desc `E_COMMERCE`.`PRODUCT_TYPE_DETAILS`;
-desc `E_COMMERCE`.`PRODUCT`;
-desc `E_COMMERCE`.`PRODUCT_CATEGORY`;
-desc `E_COMMERCE`.`CART`;
-desc `E_COMMERCE`.`WISHLIST`;
-desc `E_COMMERCE`.`ORDER`;
-desc `E_COMMERCE`.`TRENDING_PRODUCTS`;
-desc `E_COMMERCE`.`PAYMENT_DETAILS`;

@@ -1,0 +1,8 @@
+apply plugin: "application"
+mainClassName = "com.clone.ecommerce.EcommerceApplication"
+
+bootJar {
+	archivesBaseName = 'ecom_business_model'
+}
+
+group = 'ecom'
