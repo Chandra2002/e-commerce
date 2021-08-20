@@ -27,7 +27,7 @@ public class ProductType {
         return gender.toString();
     }
 
-    public void setGender(Gender gender) {
-        this.gender = gender;
+    public void setGender(String gender) {
+        this.gender = Gender.valueOf(gender);
     }
 }

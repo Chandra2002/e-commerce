@@ -1,4 +1,4 @@
-package com.clone.ecommerce.service.impl;
+package com.clone.ecommerce.service.serverimpl;
 
 import com.clone.ecommerce.service.AdminService;
 import com.clone.ecommerce.util.Product;
@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
@@ -116,10 +115,19 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional(rollbackFor={Exception.class})
     public ResponseEntity<?> addProductToProductTable(Product product) throws SQLException {
-        String query = "INSERT INTO `"+dbName+"`.`PRODUCT` (product_name, cost, quantity, available_delivery_list, discount) VALUES (?, ?, ?, ?, ?)";
+        String select_query = "SELECT `PRODUCT_TYPE_ID` FROM `"+dbName+"`.`PRODUCT_TYPE_DETAILS` WHERE `PRODUCT_TYPE_NAME`=\""+product.getProduct_type()+"\"";
+        int product_type_id = -1;
+        try{
+            product_type_id = jdbcTemplate.queryForObject(select_query, Integer.class);
+        }catch (DataAccessException ex){
+            throw new SQLException("Error occured during selecting product_type_id from the db: "+ ex.getMessage());
+        }
+        String query = "INSERT INTO `"+dbName+"`.`PRODUCT` (product_name, cost, quantity, available_delivery_list, discount, product_type_id) VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder holder = new GeneratedKeyHolder();
         try{
+            int final_product_type_id = product_type_id;
             jdbcTemplate.update(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(query, new String[]{ "product_id" });
                 preparedStatement.setString(1, product.getProductName());
@@ -127,15 +135,15 @@ public class AdminServiceImpl implements AdminService {
                 preparedStatement.setInt(3, product.getQuantity());
                 preparedStatement.setString(4, product.getAvailableDeliveryList().toString());
                 preparedStatement.setInt(5, product.getDiscount());
+                preparedStatement.setInt(6, final_product_type_id);
                 return preparedStatement;
             }, holder);
         }catch (DataAccessException ex){
             throw new SQLException("Error occured during inserting product into the db: "+ ex.getMessage());
         }
-        //"INSERT INTO `"+dbName+"`.`PRODUCT_CATEGORY (product_id, product_type_id, product_category) VALUES ("+holder.getKey()+","++")"+
-        String select_query = "SELECT `PRODUCT_TYPE_ID` FROM `"+dbName+"`.`PRODUCT_TYPE_DETAILS` WHERE `PRODUCT_TYPE_NAME`="+product.getProduct_type()+";";
         JSONObject responseBody = new JSONObject();
         responseBody.put("product_id", holder.getKey());
+        responseBody.put("product_type_id", product_type_id);
         return new ResponseEntity<>(responseBody.toString(), HttpStatus.CREATED);
     }
 }

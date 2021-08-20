@@ -26,7 +26,7 @@ public class CreateInitialTables {
     @PostConstruct
     public void createInitialTables(){
         logger.debug("Execution of script for creationg of all the tables");
-        String queries[] = new String[11];
+        String queries[] = new String[10];
         queries[0] = "CREATE DATABASE IF NOT EXISTS `"+dbName+"`;";
         queries[1] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`USER_DETAILS` (" +
                 "user_id bigint not null auto_increment," +
@@ -53,24 +53,20 @@ public class CreateInitialTables {
                 "quantity integer default 0," +
                 "available_delivery_list json default null," +
                 "discount integer default 0," +
-                "primary key (product_id));";
-        queries[5] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`PRODUCT_CATEGORY` (" +
-                "product_id bigint not null," +
                 "product_type_id bigint not null," +
-                "product_category enum(\"<10000\", \"<100000\", \">100000\")," +
-                "foreign key (product_id) references `"+dbName+"`.`PRODUCT`(product_id)," +
+                "primary key (product_id)," +
                 "foreign key (product_type_id) references `"+dbName+"`.`PRODUCT_TYPE_DETAILS`(product_type_id));";
-        queries[6] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`CART` (" +
+        queries[5] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`CART` (" +
                 "product_id bigint not null," +
                 "user_id bigint not null," +
                 "foreign key (product_id) references `"+dbName+"`.`PRODUCT`(product_id)," +
                 "foreign key (user_id) references `"+dbName+"`.`USER_DETAILS`(user_id));";
-        queries[7] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`WISHLIST` (" +
+        queries[6] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`WISHLIST` (" +
                 "product_id bigint not null," +
                 "user_id bigint not null," +
                 "foreign key (product_id) references `"+dbName+"`.`PRODUCT`(product_id)," +
                 "foreign key (user_id) references `"+dbName+"`.`USER_DETAILS`(user_id));";
-        queries[8] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`ORDER` (" +
+        queries[7] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`ORDER` (" +
                 "order_id bigint not null auto_increment," +
                 "product_id bigint not null," +
                 "user_id bigint not null," +
@@ -78,11 +74,11 @@ public class CreateInitialTables {
                 "primary key (order_id)," +
                 "foreign key (product_id) references `"+dbName+"`.`PRODUCT`(product_id)," +
                 "foreign key (user_id) references `"+dbName+"`.`USER_DETAILS`(user_id));";
-        queries[9] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`TRENDING_PRODUCTS` (" +
+        queries[8] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`TRENDING_PRODUCTS` (" +
                 "product_id bigint not null," +
                 "no_of_times_product_is_sold integer default 0," +
                 "foreign key (product_id) references PRODUCT(product_id));";
-        queries[10] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`PAYMENT_DETAILS` (" +
+        queries[9] = CREATE_TABLE_IF_NOT_EXISTS+dbName+"`.`PAYMENT_DETAILS` (" +
                 "payment_type varchar(255) default null," +
                 "card_upi_number decimal(16) not null," +
                 "user_id bigint not null," +
